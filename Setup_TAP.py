@@ -7,8 +7,9 @@ All the data required to set up and build TAP cubes + site.txt file should be in
 
 """
 
-import os, datetime
+import os, sys, datetime
 import numpy as np
+import netCDF4 as nc4
 
 RootDir =  os.path.split(__file__)[0]
 print "Loading TAP Setup data from:", RootDir
@@ -48,16 +49,18 @@ DataStartEnd = (datetime.datetime(2004, 1, 1, 1),
 
 
 DataGaps = ( )
-Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\roms_surface'
+Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\\roms_surface'
 
 # do some finagling with the start times in the data files
+#fn = os.path.join(Data_Dir,'roms_surface','roms_surface_2004.txt')
 fn = os.path.join(Data_Dir,'roms_surface_2004.txt')
+
 f = file(fn)
 flist = []
 for line in f:
     name = os.path.join(Data_Dir, line)
-    flist.append(name[:-1])   # Gonzo cat version
-    # flist.append(name[:-1])   # laptop current version
+    # flist.append(name[:-1])   # Gonzo cat version
+    flist.append(name[:-1])   # laptop current version
 Time_Map = []
 for fn in flist:
     d = nc4.Dataset(fn)
