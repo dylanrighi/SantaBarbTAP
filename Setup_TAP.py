@@ -44,29 +44,27 @@ TimeSeries = None
 # time span of your data set
 # BOEM sample data files
 DataStartEnd = (datetime.datetime(2004, 1, 1, 1),
-                datetime.datetime(2004,12,31,23)
+                datetime.datetime(2004,7,10,23)
                 )
 
 
 DataGaps = ( )
-Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\\roms_surface'
+# Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\\roms_surface'
+# fn = os.path.join(Data_Dir,'roms_surface_2004.txt')
 
-# do some finagling with the start times in the data files
-#fn = os.path.join(Data_Dir,'roms_surface','roms_surface_2004.txt')
-fn = os.path.join(Data_Dir,'roms_surface_2004.txt')
 
-f = file(fn)
-flist = []
-for line in f:
-    name = os.path.join(Data_Dir, line)
-    # flist.append(name[:-1])   # Gonzo cat version
-    flist.append(name[:-1])   # laptop current version
-Time_Map = []
-for fn in flist:
-    d = nc4.Dataset(fn)
-    t = d['time']
-    file_start_time = nc4.num2date(t[0], units=t.units)
-    Time_Map.append( (file_start_time, fn) )
+Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_gnome\\roms_gnome'
+# Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\\roms_surface'
+c_filelist = os.path.join(Data_Dir,'filelist.txt')
+c_Topology = os.path.join(Data_Dir,'Topology_1.3.10.DAT')
+c_fn = os.path.join(Data_Dir,'roms_surface_2004.txt')
+
+w_Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_gnome\wrf_gnome'
+# w_Data_Dir = 'C:\Users\dylan.righi\Science\SantaBarbTAP\data_ROMS\wrf'
+w_filelist = os.path.join(w_Data_Dir,'filelist.txt')
+w_Topology = os.path.join(w_Data_Dir,'wrf_topo_1.3.10.DAT')
+w_fn = os.path.join(w_Data_Dir,'wrf_2004.txt')
+
 
 
 # specification for how you want seasons to be defined:
@@ -74,14 +72,6 @@ for fn in flist:
 #  [name, (months) ]
 #    name is a string for the season name  
 #    months is a tuple of integers indicating which months are in that season
-
-# could do 
-# Seasons = [["All_year", range(1,13) ],
-#               ]
-
-# # example for specifying season
-# Seasons = [["Winter", [11, 12, 1, 2, 3]],
-#          ["Summer",[4, 5, 6, 7, 8, 9, 10]],]
 Seasons = [
           ["AllYear", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]
           # ["Winter", [12, 1, 2, 3, 4, 5]],
@@ -98,13 +88,13 @@ StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seas
 #NumStarts = 5000
 NumStarts = 20
 
+# # kludge for iterating runs
+# r0= int(sys.argv[2])
+# r1= int(sys.argv[3])
+# print 'RunLims : ', r0,r1
+# RunStarts = range(r0,r1)
 
-# kludge for iterating runs
-r0= int(sys.argv[2])
-r1= int(sys.argv[3])
-
-print 'RunLims : ', r0,r1
-RunStarts = range(r0,r1)
+RunStarts = range(0,NumStarts)
 
 # section for defining already run Trajectory files for BuildCubes
 RunFiles = []
@@ -112,12 +102,6 @@ RunFiles = []
 
 # # Length of release in hours  (0 for instantaneous)
 ReleaseLength = 2*24  # in hours
-
-# name of the GNOME SAV file you want to use
-# note: GNOME locks it (for a very brief time when loading) 
-# which means you need a separate copy for each
-# instance of GNOME you want to run (OR just don't start multiple GNOMES too quickly)
-PyGnome_script = "script_SB"
 
 # number of Lagrangian elements you want in the GNOME run
 NumLEs = 1000
@@ -128,8 +112,15 @@ OilWeatheringType = None
 #                           # post-processed by the TAP viewer for instantaneous
 #                           # releases
 
-#If ReceptorType is Grid, you need these, it defines the GRID
+# name of the GNOME SAV file you want to use
+# note: GNOME locks it (for a very brief time when loading) 
+# which means you need a separate copy for each
+# instance of GNOME you want to run (OR just don't start multiple GNOMES too quickly)
+# not using this anymore...
+# PyGnome_script = "script_SB"
 
+
+#If ReceptorType is Grid, you need these, it defines the GRID
 class Grid:
 	pass
 Grid.min_lat = 31.0 # decimal degrees
@@ -147,23 +138,20 @@ Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 
 
 
 TrajectoriesPath = "Trajectories_n" + str(NumLEs) # relative to RootDir
-# TrajectoriesPath = "Trajectories_n5000" # relative to RootDir
-#TrajectoriesRootname = "FlStr_Traj"
-
 
 CubesPath = "Cubes_n" + str(NumLEs)
-# CubesPath = "Cubes_n5000"
+
 CubesRootNames = ["Arc_" for i in StartTimeFiles] # built to match the start time files
 
-CubeStartSitesFilename = os.path.join(RootDir, "SB_sites.txt")
+CubeStartSitesFilename = os.path.join(RootDir, "SB_sites_test.txt")
 
 
-# kludge for iterating runs
-r0= int(sys.argv[4])
-r1= int(sys.argv[5])
-
+# # kludge for iterating runs
+r0= int(sys.argv[2])
+r1= int(sys.argv[3])
 print 'RunSites : ', r0,r1
 RunSites = range(r0,r1)
+
 
 # this code reads the file
 CubeStartSites = [x.split("#", 1)[0].strip() for x in open(CubeStartSitesFilename).readlines()]
@@ -174,18 +162,9 @@ CubeStartFilter = []   # January
 MapName = "BOEM SB TAP"
 MapFileName, MapFileType = ("coast_SBbig.bna", "BNA")
 
-# days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 180]
+
 days = [1, 3, 5, 7, 10, 14, 20]
-# days = [1, 2, 3]
 OutputTimes = [24*i for i in days] # output times in hours(calculated from days
-
-# output time in hours
-# OutputTimes = [6, 12, 24, 48, 72]
-
-# OutputUserStrings = ["1 day",
-#                      "2 days",
-#                      "3 days",
-#                      ]
 
 OutputUserStrings = ["1 day",
                      "3 days",
@@ -203,8 +182,8 @@ OutputUserStrings = ["1 day",
                      ]
 
 # this is calculated from the OutputTimes
-# TrajectoryRunLength = OutputTimes[-1]
-TrajectoryRunLength = 24 * 20
+TrajectoryRunLength = OutputTimes[-1]
+# TrajectoryRunLength = 24 * 20
 
 PresetLOCS = ["5 barrels", "10 barrels", "20 barrels"]
 PresetSpillAmounts = ["1000 barrels", "100 barrels"]
@@ -215,5 +194,4 @@ PresetSpillAmounts = ["1000 barrels", "100 barrels"]
 TAPViewerSource = RootDir # where the TAP view, etc lives.
 ## setup for the Viewer"
 TAPViewerPath = "TapView_n" + str(NumLEs)
-# TAPViewerPath = "TapView_n5000"
 
