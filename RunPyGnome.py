@@ -211,8 +211,8 @@ for Season in setup.StartTimeFiles:
 
 
 
-        # for pos_idx, start_position in enumerate(start_positions):
-        for pos_idx in setup.RunSites:
+        for pos_idx, start_position in enumerate(start_positions):
+        # for pos_idx in setup.RunSites:
             start_position = start_positions[pos_idx]
 
             OutDir = os.path.join(setup.RootDir,setup.TrajectoriesPath,SeasonName,'pos_%03i'%(pos_idx+1))

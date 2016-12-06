@@ -86,7 +86,7 @@ StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seas
 
 # number of start times you want in each season:
 #NumStarts = 5000
-NumStarts = 20
+NumStarts = 2
 
 # # kludge for iterating runs
 # r0= int(sys.argv[2])
@@ -147,10 +147,10 @@ CubeStartSitesFilename = os.path.join(RootDir, "SB_sites_test.txt")
 
 
 # # kludge for iterating runs
-r0= int(sys.argv[2])
-r1= int(sys.argv[3])
-print 'RunSites : ', r0,r1
-RunSites = range(r0,r1)
+# r0= int(sys.argv[2])
+# r1= int(sys.argv[3])
+# print 'RunSites : ', r0,r1
+# RunSites = range(r0,r1)
 
 
 # this code reads the file
@@ -168,17 +168,17 @@ OutputTimes = [24*i for i in days] # output times in hours(calculated from days
 
 OutputUserStrings = ["1 day",
                      "3 days",
-                     "5 days",
-                     "7 days",
-                     "10 days",
-                     "14 days",
-                     "20 days",
-#                     "30 days",
-#                     "60 days",
-#                     "70 days",
-#                     "90 days",
-#                     "120 days",
-#                     "180 days",
+                    # "5 days",
+                    # "7 days",
+                    # "10 days",
+                    # "14 days",
+                    # "20 days",
+                    # "30 days",
+                    # "60 days",
+                    # "70 days",
+                    # "90 days",
+                    # "120 days",
+                    # "180 days",
                      ]
 
 # this is calculated from the OutputTimes
